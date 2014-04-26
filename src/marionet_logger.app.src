@@ -1,0 +1,13 @@
+{application, marionet_logger,
+ [
+  {description, ""},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib,
+		  emqttc
+                 ]},
+  {mod, { marionet_logger_app, []}},
+  {env, []}
+ ]}.
