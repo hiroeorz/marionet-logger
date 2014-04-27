@@ -62,9 +62,13 @@ init([]) ->
 
     ClientSup = {marionet_logger_client_sup, 
 		 {marionet_logger_client_sup, start_link, []},
-		 Restart, Shutdown, Type, ['AModule']},
-    
-    {ok, {SupFlags, [ClientSup]}}.
+		 Restart, Shutdown, Type, [marionet_logger_client_sup]},
+
+    EventSup = {ml_event_sup, 
+		 {ml_event_sup, start_link, []},
+		 Restart, Shutdown, Type, [ml_event_sup]},
+
+    {ok, {SupFlags, [EventSup, ClientSup]}}.
 
 %%%===================================================================
 %%% Internal functions

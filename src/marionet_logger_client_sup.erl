@@ -12,7 +12,7 @@
 
 %% API
 -export([start_link/0,
-	 start_client/2]).
+	 start_client/3]).
 
 %% Supervisor callbacks
 -export([init/1]).
@@ -37,9 +37,9 @@ start_link() ->
 %%% Supervisor callbacks
 %%%===================================================================
 
-start_client(Host, Port) ->
-    ChildSpec = {{emqttc, make_ref()},
-		 {emqttc, start_link, [ [{host, Host}, {port, Port}] ]},
+start_client(Host, Port, Topics) ->
+    Opts = [{host, Host}, {port, Port}, {topics, Topics}],
+    ChildSpec = {{emqttc, make_ref()}, {emqttc, start_link, [Opts]},
 		 permanent, 2000, worker, [emqttc]},
     supervisor:start_child(?SERVER, ChildSpec).
 

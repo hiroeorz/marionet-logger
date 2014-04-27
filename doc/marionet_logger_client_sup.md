@@ -17,7 +17,7 @@ __Authors:__ HIROE Shin ([`shin@HIROE-no-MacBook-Pro.local`](mailto:shin@HIROE-n
 ## Function Index ##
 
 
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#start_client-2">start_client/2</a></td><td></td></tr><tr><td valign="top"><a href="#start_link-0">start_link/0</a></td><td>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#start_client-3">start_client/3</a></td><td></td></tr><tr><td valign="top"><a href="#start_link-0">start_link/0</a></td><td>
 Starts the supervisor.</td></tr></table>
 
 
@@ -25,11 +25,11 @@ Starts the supervisor.</td></tr></table>
 
 ## Function Details ##
 
-<a name="start_client-2"></a>
+<a name="start_client-3"></a>
 
-### start_client/2 ###
+### start_client/3 ###
 
-`start_client(Host, Port) -> any()`
+`start_client(Host, Port, Topics) -> any()`
 
 
 <a name="start_link-0"></a>

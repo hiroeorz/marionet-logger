@@ -1,3 +1,6 @@
+%% -*- mode: erlang;erlang-indent-level: 4;indent-tabs-mode: nil -*-
+%% ex: ts=4 sw=4 ft=erlang et
+
 {application, marionet_logger,
  [
   {description, ""},
@@ -9,5 +12,14 @@
 		  emqttc
                  ]},
   {mod, { marionet_logger_app, []}},
-  {env, []}
+  {env, [
+         {event_pools, 
+          [
+           {fluent_logger, [{size, 10}, {max_overflow, 5} ],
+            [
+             {fluent_event, {io, "127.0.0.1", 24224}}
+            ]}
+          ]}
+
+        ]}
  ]}.

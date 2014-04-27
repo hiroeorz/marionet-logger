@@ -10,8 +10,8 @@
 
 %% API
 -export([start/0,
-	 start_client/1,
-	 start_client/2]).
+	 start_subscribe/2,
+	 start_subscribe/3]).
 
 %%%===================================================================
 %%% API
@@ -29,16 +29,18 @@ start() ->
 %% @doc Create client and connect to MQTT broker.
 %% @end
 %%--------------------------------------------------------------------
--spec start_client(Host) -> {ok, pid()} when
-      Host :: string().
-start_client(Host) ->
-    start_client(Host, 1883).
-
--spec start_client(Host, Port) -> {ok, pid()} when
+-spec start_subscribe(Host, Topics) -> {ok, pid()} when
       Host :: string(),
-      Port :: inet:port_number().
-start_client(Host, Port) ->
-    marionet_logger_client_sup:start_client(Host, Port).
+      Topics :: [{binary(), non_neg_integer()}].
+start_subscribe(Host, Topics) when is_list(Topics) ->
+    start_subscribe(Host, 1883, Topics).
+
+-spec start_subscribe(Host, Port, Topics) -> {ok, pid()} when
+      Host :: string(),
+      Port :: inet:port_number(),
+      Topics :: [{binary(), non_neg_integer()}].
+start_subscribe(Host, Port, Topics) when is_list(Topics) ->
+    marionet_logger_client_sup:start_client(Host, Port, Topics).
 
 %%%===================================================================
 %%% Internal functions
