@@ -9,7 +9,9 @@
   {applications, [
                   kernel,
                   stdlib,
-		  emqttc
+		  emqttc,
+                  gen_queue,
+                  poolcat
                  ]},
   {mod, { marionet_logger_app, []}},
   {env, [

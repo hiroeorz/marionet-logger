@@ -2,4 +2,5 @@
 {application,edown}.
 {packages,[]}.
 {modules,[marionet_logger,marionet_logger_app,marionet_logger_client_sup,
-          marionet_logger_sup,ml_event,ml_event_sup,ml_sub_event_handler]}.
+          marionet_logger_sup,ml_event,ml_event_sup,ml_logger_handler,
+          ml_sub_event,ml_sub_event_handler]}.

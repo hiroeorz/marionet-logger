@@ -13,5 +13,7 @@
 <tr><td><a href="http://github.com/hiroeorz17/marionet-logger/blob/master/doc/marionet_logger_sup.md" class="module">marionet_logger_sup</a></td></tr>
 <tr><td><a href="http://github.com/hiroeorz17/marionet-logger/blob/master/doc/ml_event.md" class="module">ml_event</a></td></tr>
 <tr><td><a href="http://github.com/hiroeorz17/marionet-logger/blob/master/doc/ml_event_sup.md" class="module">ml_event_sup</a></td></tr>
+<tr><td><a href="http://github.com/hiroeorz17/marionet-logger/blob/master/doc/ml_logger_handler.md" class="module">ml_logger_handler</a></td></tr>
+<tr><td><a href="http://github.com/hiroeorz17/marionet-logger/blob/master/doc/ml_sub_event.md" class="module">ml_sub_event</a></td></tr>
 <tr><td><a href="http://github.com/hiroeorz17/marionet-logger/blob/master/doc/ml_sub_event_handler.md" class="module">ml_sub_event_handler</a></td></tr></table>
 
