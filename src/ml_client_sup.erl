@@ -1,17 +1,18 @@
 %%%-------------------------------------------------------------------
 %%% @author HIROE Shin <shin@HIROE-no-MacBook-Pro.local>
-%%% @copyright (C) 2013, HIROE Shin
+%%% @copyright (C) 2014, HIROE Shin
 %%% @doc
 %%%
 %%% @end
-%%% Created : 30 Dec 2013 by HIROE Shin <shin@HIROE-no-MacBook-Pro.local>
+%%% Created : 26 Apr 2014 by HIROE Shin <shin@HIROE-no-MacBook-Pro.local>
 %%%-------------------------------------------------------------------
--module(ml_event_sup).
+-module(ml_client_sup).
 
 -behaviour(supervisor).
 
 %% API
--export([start_link/0]).
+-export([start_link/0,
+	 start_client/3]).
 
 %% Supervisor callbacks
 -export([init/1]).
@@ -36,6 +37,12 @@ start_link() ->
 %%% Supervisor callbacks
 %%%===================================================================
 
+start_client(Host, Port, Topics) ->
+    Opts = [{host, Host}, {port, Port}, {topics, Topics}],
+    ChildSpec = {{emqttc, make_ref()}, {emqttc, start_link, [Opts]},
+		 permanent, 2000, worker, [emqttc]},
+    supervisor:start_child(?SERVER, ChildSpec).
+
 %%--------------------------------------------------------------------
 %% @private
 %% @doc
@@ -53,20 +60,8 @@ init([]) ->
     RestartStrategy = one_for_one,
     MaxRestarts = 1000,
     MaxSecondsBetweenRestarts = 3600,
-
     SupFlags = {RestartStrategy, MaxRestarts, MaxSecondsBetweenRestarts},
-
-    {ok, Pools} = application:get_env(marionet_logger, event_pools),
-
-    F = fun({Name, SizeArgs, WorkerArgs}) ->
-		PoolArgs = [{name, {local, Name}},
-			    {worker_module, ml_event}] ++ SizeArgs,
-		poolboy:child_spec(Name, PoolArgs, WorkerArgs)
-	end,
-
-    PoolSpecs = lists:map(F, Pools),
-
-    {ok, {SupFlags, PoolSpecs}}.
+    {ok, {SupFlags, []}}.
 
 %%%===================================================================
 %%% Internal functions

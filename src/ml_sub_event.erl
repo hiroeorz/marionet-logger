@@ -49,16 +49,12 @@ init([]) ->
 %% @end
 %%--------------------------------------------------------------------
 handle_event({publish, Topic, Payload}, State) ->
-    io:format("publish: topic:~p~n", [Topic]),
-    io:format("publish: payload:~p~n", [Payload]),
     ok = poolcat:push_task(ml_logger, {publish, Topic, Payload}),
     {ok, State};
 
 handle_event({publish, Topic, Payload, 1, MsgId}, State) ->
-    io:format("publish: topic(id:~p):~p~n", [MsgId, Topic]),
-    io:format("publish: payload:~p~n", [Payload]),
     ok = poolcat:push_task(ml_logger, {publish, Topic, Payload}),
-    emqttc:puback(emqttc, MsgId),
+    ok = emqttc:puback(emqttc, MsgId),
     {ok, State};
 
 handle_event(_Event, State) ->

@@ -42,7 +42,7 @@ start_subscribe(Host, Topics) when is_list(Topics) ->
       Port :: inet:port_number(),
       Topics :: [{binary(), non_neg_integer()}].
 start_subscribe(Host, Port, Topics) when is_list(Topics) ->
-    marionet_logger_client_sup:start_client(Host, Port, Topics).
+    ml_client_sup:start_client(Host, Port, Topics).
 
 %%%===================================================================
 %%% Internal functions

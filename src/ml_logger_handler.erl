@@ -41,11 +41,26 @@ init(_Any) ->
 %% @doc Handling task messages
 %% @end
 %%--------------------------------------------------------------------
-handle_pop(Task, State = #state{fluent_logger_pid = Pid}) ->
-    %% process your task using Task and State
-    io:format("TASK: ~p~n", [Task]),
-    ok = gen_event:notify(Pid, {digital, [{<<"agent">>,<<"foo">>}]}),
+handle_pop({publish, Topic, Payload}, 
+	   State = #state{fluent_logger_pid = Pid}) ->
+    Obj = marionet_data:unpack(Payload),
+    Json = jsx:encode([{<<"topic">>, Topic} | Obj]),
+
+    case proplists:get_value(<<"type">>, Obj) of
+	<<"di">> ->
+	    ok = gen_event:notify(Pid, {digital, Json});
+	<<"ai">> ->
+	    ok = gen_event:notify(Pid, {analog, Json});
+	Type ->
+	    lager:warning("unknown io log type: ~p", [Type])
+    end,
+
+    {ok, State};
+
+handle_pop(Task, State) ->
+    io:format("unknown task: ~p~n", [Task]),
     {ok, State}.
+
 
 %%--------------------------------------------------------------------
 %% @private

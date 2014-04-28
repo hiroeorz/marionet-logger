@@ -62,9 +62,9 @@ init([]) ->
     Shutdown = 2000,
     Type = worker,
 
-    ClientSup = {marionet_logger_client_sup, 
-		 {marionet_logger_client_sup, start_link, []},
-		 Restart, Shutdown, Type, [marionet_logger_client_sup]},
+    ClientSup = {ml_client_sup, 
+		 {ml_client_sup, start_link, []},
+		 Restart, Shutdown, Type, [ml_client_sup]},
 
     {ok, {SupFlags, [ClientSup]}}.
 
