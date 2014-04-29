@@ -24,6 +24,7 @@
 %% @end
 %%--------------------------------------------------------------------
 start() ->
+    application:start(fluent),
     application:start(emqttc),
     application:start(gen_queue),
     application:start(poolcat),

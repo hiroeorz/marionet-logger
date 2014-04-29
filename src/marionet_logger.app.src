@@ -9,6 +9,7 @@
   {applications, [
                   kernel,
                   stdlib,
+                  fluent,
 		  emqttc,
                   gen_queue,
                   poolcat
