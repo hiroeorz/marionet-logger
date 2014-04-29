@@ -43,13 +43,13 @@ init(_Any) ->
 handle_pop({publish, Topic, Payload}, 
 	   State = #state{fluent_logger_pid = Pid}) ->
     Obj = marionet_data:unpack(Payload),
-    Json = jsx:encode([{<<"topic">>, Topic} | Obj]),
+    Obj1 = [{<<"topic">>, Topic} | Obj],
 
     case proplists:get_value(<<"type">>, Obj) of
 	<<"di">> ->
-	    ok = gen_event:notify(Pid, {digital, Json});
+	    ok = gen_event:notify(Pid, {digital, Obj1});
 	<<"ai">> ->
-	    ok = gen_event:notify(Pid, {analog, Json});
+	    ok = gen_event:notify(Pid, {analog, Obj1});
 	Type ->
 	    lager:warning("unknown io log type: ~p", [Type])
     end,
