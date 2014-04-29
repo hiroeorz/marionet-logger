@@ -13,6 +13,8 @@
 	 start_subscribe/2,
 	 start_subscribe/3]).
 
+-export([start_dev/0]).
+
 %%%===================================================================
 %%% API
 %%%===================================================================
@@ -47,3 +49,20 @@ start_subscribe(Host, Port, Topics) when is_list(Topics) ->
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================
+
+%%%===================================================================
+%%% Development functions
+%%%===================================================================
+
+%% set mqtt.marionet.org of ipaddress in /etc/hosts .
+start_dev() ->
+    ?MODULE:start(),
+    ?MODULE:start_subscribe("mqtt.marionet.org", 
+			    [{<<"/demo/galileo/analog/#">>, 0},
+			     {<<"/demo/pi001/analog/#">>,   0}]),
+
+    ?MODULE:start_subscribe("mqtt.marionet.org", 
+			    [{<<"/demo/galileo/digital/#">>, 0},
+			     {<<"/demo/pi001/digital/#">>,   0}]),
+    ok.
+    

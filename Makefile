@@ -32,14 +32,8 @@ test:
 edoc:
 	@$(EDOWN)
 
-generate-pi:
-	cd rel/raspberrypi && $(REBAR_GEN) generate
-
-generate-galileo:                                                
-	cd rel/galileo && $(REBAR_GEN) generate
-
-generate-plc:
-	cd rel/plc && $(REBAR_GEN) generate
+generate:
+	cd rel/marionet-logger && $(REBAR_GEN) generate
 
 dialyzer: compile
 	@$(DIALYZER) ebin deps/serial/ebin

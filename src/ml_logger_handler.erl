@@ -31,7 +31,6 @@
 %% @end
 %%--------------------------------------------------------------------
 init(_Any) ->
-    io:format("poolcat handler init~n"),
     {ok, Pid} = gen_event:start_link(),
     ok = gen_event:add_handler(Pid, fluent_event, io),
     {ok,  #state{fluent_logger_pid = Pid}}.
@@ -60,7 +59,6 @@ handle_pop({publish, Topic, Payload},
 handle_pop(Task, State) ->
     io:format("unknown task: ~p~n", [Task]),
     {ok, State}.
-
 
 %%--------------------------------------------------------------------
 %% @private

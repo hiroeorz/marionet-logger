@@ -1,6 +1,4 @@
 *.beam
-priv/gpio_lib
-priv/bin
 ._*
 doc/*.html
 ebin
@@ -14,9 +12,4 @@ eunit.coverage.xml
 _build
 priv/rgpio_lib
 c_src/*.o
-rel/marionet-device-001/marionet-device-001
-rel/marionet-device-002/marionet-device-002
-rel/raspberrypi/raspberrypi
-rel/plc/plc
-rel/galileo/galileo
-example/*/vendor
+rel/marionet-logger/marionet_logger
