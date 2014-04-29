@@ -31,6 +31,7 @@
 %% @end
 %%--------------------------------------------------------------------
 init(_Any) ->
+    lager:info("ml_logger init."),
     {ok, Pid} = gen_event:start_link(),
     ok = gen_event:add_handler(Pid, fluent_event, io),
     {ok,  #state{fluent_logger_pid = Pid}}.
@@ -42,14 +43,16 @@ init(_Any) ->
 %%--------------------------------------------------------------------
 handle_pop({publish, Topic, Payload}, 
 	   State = #state{fluent_logger_pid = Pid}) ->
+    io:format("topic: ~p~n", [Topic]),
     Obj = marionet_data:unpack(Payload),
     Obj1 = [{<<"topic">>, Topic} | Obj],
+    io:format("~p~n", [Obj1]),
 
     case proplists:get_value(<<"type">>, Obj) of
 	<<"di">> ->
-	    ok = gen_event:notify(Pid, {digital, Obj1});
+	    ok = gen_event:notify(Pid, {<<"digital">>, Obj1});
 	<<"ai">> ->
-	    ok = gen_event:notify(Pid, {analog, Obj1});
+	    ok = gen_event:notify(Pid, {<<"analog">>, Obj1});
 	Type ->
 	    lager:warning("unknown io log type: ~p", [Type])
     end,
