@@ -12,10 +12,22 @@
                   fluent,
 		  emqttc,
                   gen_queue,
-                  poolcat
+                  poolcat,
+                  poolboy
                  ]},
   {mod, { marionet_logger_app, []}},
   {env, [
+         {pools, 
+          [
+           {riak_pool, [
+                        {size, 10},
+                        {max_overflow, 20}
+                       ], [
+                           {host, "127.0.0.1"},
+                           {port, 8087}
+                          ]
+           }]},
+
          {event_pools, 
           [
            {fluent_logger, [{size, 10}, {max_overflow, 5} ],

@@ -15,7 +15,7 @@ __Authors:__ HIROE Shin ([`shin@HIROE-no-MacBook-Pro.local`](mailto:shin@HIROE-n
 ## Function Index ##
 
 
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#start-0">start/0</a></td><td>Start application.</td></tr><tr><td valign="top"><a href="#start_subscribe-2">start_subscribe/2</a></td><td>Create client and connect to MQTT broker.</td></tr><tr><td valign="top"><a href="#start_subscribe-3">start_subscribe/3</a></td><td></td></tr></table>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#start-0">start/0</a></td><td>Start application.</td></tr><tr><td valign="top"><a href="#start_dev-0">start_dev/0</a></td><td></td></tr><tr><td valign="top"><a href="#start_subscribe-2">start_subscribe/2</a></td><td>Create client and connect to MQTT broker.</td></tr><tr><td valign="top"><a href="#start_subscribe-3">start_subscribe/3</a></td><td></td></tr></table>
 
 
 <a name="functions"></a>
@@ -29,6 +29,13 @@ __Authors:__ HIROE Shin ([`shin@HIROE-no-MacBook-Pro.local`](mailto:shin@HIROE-n
 `start() -> any()`
 
 Start application
+<a name="start_dev-0"></a>
+
+### start_dev/0 ###
+
+`start_dev() -> any()`
+
+
 <a name="start_subscribe-2"></a>
 
 ### start_subscribe/2 ###

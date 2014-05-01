@@ -4,9 +4,9 @@
 %%% @doc
 %%%
 %%% @end
-%%% Created : 26 Apr 2014 by HIROE Shin <shin@HIROE-no-MacBook-Pro.local>
+%%% Created :  1 May 2014 by HIROE Shin <shin@HIROE-no-MacBook-Pro.local>
 %%%-------------------------------------------------------------------
--module(marionet_logger_sup).
+-module(riak_pool_sup).
 
 -behaviour(supervisor).
 
@@ -50,26 +50,14 @@ start_link() ->
 %% @end
 %%--------------------------------------------------------------------
 init([]) ->
-    emqttc_event:add_handler(ml_sub_event, []),
+    {ok, Pools} = application:get_env(marionet_logger, pools),
 
-    RestartStrategy = one_for_one,
-    MaxRestarts = 1000,
-    MaxSecondsBetweenRestarts = 3600,
-
-    SupFlags = {RestartStrategy, MaxRestarts, MaxSecondsBetweenRestarts},
-
-    Restart = permanent,
-    Shutdown = 2000,
-
-    ClientSup = {ml_client_sup, 
-		 {ml_client_sup, start_link, []},
-		 Restart, Shutdown, worker, [ml_client_sup]},
-
-    PoolSup = {riak_pool_sup, 
-		 {riak_pool_sup, start_link, []},
-		 Restart, Shutdown, supervisor, [riak_pool_sup]},
-
-    {ok, {SupFlags, [ClientSup, PoolSup]}}.
+    PoolSpecs = lists:map(fun({Name, SizeArgs, WorkerArgs}) ->
+        PoolArgs = [{name, {local, Name}},
+                    {worker_module, riak_pool}] ++ SizeArgs,
+        poolboy:child_spec(Name, PoolArgs, WorkerArgs)
+    end, Pools),
+    {ok, {{one_for_one, 10, 10}, PoolSpecs}}.
 
 %%%===================================================================
 %%% Internal functions

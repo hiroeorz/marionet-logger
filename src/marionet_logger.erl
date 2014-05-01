@@ -28,6 +28,7 @@ start() ->
     application:start(emqttc),
     application:start(gen_queue),
     application:start(poolcat),
+    application:start(poolboy),
     application:start(marionet_logger).
 
 %%--------------------------------------------------------------------
