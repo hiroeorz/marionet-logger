@@ -51,12 +51,36 @@ start_link(Args) ->
 search(Index, SearchQuery) ->
     call_pool({search, Index, SearchQuery}).
 
-search_logs(SearchQuery, Filter) ->
+%%--------------------------------------------------------------------
+%% @doc Search data from riak.
+%% @end
+%%--------------------------------------------------------------------
+-spec search_logs(SearchQuery, Filter) -> {ok, KeyObjects} |
+					  {error, Reason} when
+      SearchQuery :: binary(),
+      Filter :: function(),
+      KeyObjects :: #search_results{},
+      Reason :: term().
+search_logs(SearchQuery, Filter) when is_binary(SearchQuery),
+				      is_function(Filter) ->
     call_pool({search_logs, SearchQuery, Filter}).
 
-get_analog_history(Id, No) ->
+%%--------------------------------------------------------------------
+%% @doc Get analog history data from Riak.
+%% @end
+%%--------------------------------------------------------------------
+-spec get_analog_history(Id, No) -> [tuple()] when
+      Id :: binary(),
+      No :: non_neg_integer().
+get_analog_history(Id, No) when is_binary(Id), is_integer(No) ->
     call_pool({get_analog_history, Id, No}).
 
+%%--------------------------------------------------------------------
+%% @private
+%% @doc Call to process in pool.
+%% @end
+%%--------------------------------------------------------------------
+-spec call_pool(atom | tuple()) -> term().
 call_pool(Req) ->
     F = fun(Pid) -> gen_server:call(Pid, Req) end,
     poolboy:transaction(riak_pool, F).
@@ -121,9 +145,21 @@ handle_call({search_logs, SearchQuery, Filter}, _From,
 	end,
     {reply, R, State}.
 
+%%--------------------------------------------------------------------
+%% @private
+%% @doc Create query for Solr.
+%% @end
+%%--------------------------------------------------------------------
+-spec query(string(), list()) -> binary().
 query(Str, Params) ->
 	list_to_binary(io_lib:format(Str, Params)).
 
+%%--------------------------------------------------------------------
+%% @private
+%% @doc Get sotred objects from Riak.
+%% @end
+%%--------------------------------------------------------------------
+-spec get_objects(pid(), tuple(), function()) -> [tuple()].
 get_objects(Pid, {_Index, Params}, Filter) ->
     Type = proplists:get_value(<<"_yz_rt">>, Params),
     Bucket = proplists:get_value(<<"_yz_rb">>, Params),

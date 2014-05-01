@@ -2,4 +2,5 @@
 {application,edown}.
 {packages,[]}.
 {modules,[marionet_data,marionet_logger,marionet_logger_app,
-          marionet_logger_sup,ml_client_sup,ml_logger_handler,ml_sub_event]}.
+          marionet_logger_sup,ml_client_sup,ml_logger_handler,ml_sub_event,
+          riak_pool,riak_pool_sup]}.
