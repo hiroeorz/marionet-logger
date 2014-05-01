@@ -98,8 +98,7 @@ init(Args) ->
 %% @end
 %%--------------------------------------------------------------------
 handle_call({get_analog_history, Id, No}, From, State) ->    
-    Query = list_to_binary(io_lib:format("type:ai AND id:~s AND no:~w",
-					 [Id, No])),
+    Query = query("type:ai AND id:~s AND no:~w", [Id, No]),
     F = fun(E) ->
 		ObjId = proplists:get_value(<<"id">>, E),
 		ObjNo = proplists:get_value(<<"no">>, E),
@@ -121,6 +120,9 @@ handle_call({search_logs, SearchQuery, Filter}, _From,
 		{error, Reason}
 	end,
     {reply, R, State}.
+
+query(Str, Params) ->
+	list_to_binary(io_lib:format(Str, Params)).
 
 get_objects(Pid, {_Index, Params}, Filter) ->
     Type = proplists:get_value(<<"_yz_rt">>, Params),
