@@ -36,8 +36,8 @@ generate:
 	cd rel/marionet-logger && $(REBAR_GEN) generate
 
 dialyzer: compile
-	@$(DIALYZER) ebin deps/serial/ebin
+	@$(DIALYZER) ebin deps/riakc/ebin
 
 setup-dialyzer:
 	@$(DIALYZER) --build_plt \
-                 --apps kernel stdlib mnesia eunit erts crypto
+                 --apps kernel stdlib mnesia erts crypto

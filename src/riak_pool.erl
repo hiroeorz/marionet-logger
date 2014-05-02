@@ -24,6 +24,7 @@
 	 terminate/2, code_change/3]).
 
 -define(SERVER, ?MODULE).
+-define(MAX_LOG_COUNT, 2000).
 
 -record(state, {pid :: pid()}).
 
@@ -101,7 +102,6 @@ get_digital_logs(Id, No, Start, End) when is_binary(Id),
 %% @doc Get log data from Riak.
 %% @end
 %%--------------------------------------------------------------------
--define(MAX_LOG_COUNT, 1000).
 -spec get_logs(Id, Type, No, Start, End) -> [tuple()] when
       Id :: binary(),
       Type :: binary(),
@@ -191,7 +191,7 @@ handle_call({search_logs, SearchQuery, Options, Filter}, _From,
     R = case SearchResult of
 	    {ok, #search_results{docs = KeyObjList}} ->
 		L = [get_objects(Pid, Obj, Filter) || Obj <- KeyObjList],
-		{ok, sorted_logs(lists:merge(L))};
+		{ok, less_than_count(?MAX_LOG_COUNT, sort(merge(L)))};
 	    {error, Reason} ->
 		{error, Reason}
 	end,
@@ -200,11 +200,32 @@ handle_call({search_logs, SearchQuery, Options, Filter}, _From,
 
 %%--------------------------------------------------------------------
 %% @private
+%% @doc Check log count and delete if more than MAX_LOG_COUNT(2000) .
+%% @end
+%%--------------------------------------------------------------------
+-spec less_than_count(non_neg_integer(), list()) -> list().
+less_than_count(Count, List) when length(List) =< Count ->
+    List;
+
+less_than_count(Count, List) when length(List) > Count ->
+    lists:sublist(List, Count).
+
+%%--------------------------------------------------------------------
+%% @private
+%% @doc Merge log list of list.
+%% @end
+%%--------------------------------------------------------------------
+-spec merge(list()) -> list().
+merge(List) ->
+    lists:merge(List).
+
+%%--------------------------------------------------------------------
+%% @private
 %% @doc Sort log list (by datetime).
 %% @end
 %%--------------------------------------------------------------------
--spec sorted_logs(list()) -> list().
-sorted_logs(List) ->
+-spec sort(list()) -> list().
+sort(List) ->
     lists:sort(fun(Obj1, Obj2) ->
 		       Time1 = proplists:get_value(<<"datetime">>, Obj1),
 		       Time2 = proplists:get_value(<<"datetime">>, Obj2),

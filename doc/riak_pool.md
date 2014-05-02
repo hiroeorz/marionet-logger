@@ -17,7 +17,7 @@ __Authors:__ HIROE Shin ([`shin@HIROE-no-MacBook-Pro.local`](mailto:shin@HIROE-n
 ## Function Index ##
 
 
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#get_analog_history-3">get_analog_history/3</a></td><td>Get analog history data from Riak.</td></tr><tr><td valign="top"><a href="#get_digital_history-3">get_digital_history/3</a></td><td>Get analog history data from Riak.</td></tr><tr><td valign="top"><a href="#search-2">search/2</a></td><td>Search data from riak.</td></tr><tr><td valign="top"><a href="#search_logs-2">search_logs/2</a></td><td>Search data from riak.</td></tr><tr><td valign="top"><a href="#start_link-1">start_link/1</a></td><td>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#get_analog_logs-4">get_analog_logs/4</a></td><td>Get analog history data from Riak.</td></tr><tr><td valign="top"><a href="#get_digital_logs-4">get_digital_logs/4</a></td><td>Get digital history data from Riak.</td></tr><tr><td valign="top"><a href="#search-2">search/2</a></td><td>Search data from riak.</td></tr><tr><td valign="top"><a href="#search_logs-2">search_logs/2</a></td><td>Search data from riak.</td></tr><tr><td valign="top"><a href="#start_link-1">start_link/1</a></td><td>
 Starts the server.</td></tr></table>
 
 
@@ -25,30 +25,30 @@ Starts the server.</td></tr></table>
 
 ## Function Details ##
 
-<a name="get_analog_history-3"></a>
+<a name="get_analog_logs-4"></a>
 
-### get_analog_history/3 ###
-
-
-<pre><code>
-get_analog_history(Id, No, Count) -&gt; [tuple()]
-</code></pre>
-
-<ul class="definitions"><li><code>Count = non_neg_integer()</code></li><li><code>Id = binary()</code></li><li><code>No = non_neg_integer()</code></li></ul>
-
-Get analog history data from Riak.
-<a name="get_digital_history-3"></a>
-
-### get_digital_history/3 ###
+### get_analog_logs/4 ###
 
 
 <pre><code>
-get_digital_history(Id, PortNo, Count) -&gt; [tuple()]
+get_analog_logs(Id, No, Start, End) -&gt; [tuple()]
 </code></pre>
 
-<ul class="definitions"><li><code>Count = non_neg_integer()</code></li><li><code>Id = binary()</code></li><li><code>PortNo = non_neg_integer()</code></li></ul>
+<ul class="definitions"><li><code>Id = binary()</code></li><li><code>No = non_neg_integer()</code></li><li><code>Start = binary()</code></li><li><code>End = binary()</code></li></ul>
 
 Get analog history data from Riak.
+<a name="get_digital_logs-4"></a>
+
+### get_digital_logs/4 ###
+
+
+<pre><code>
+get_digital_logs(Id, No, Start, End) -&gt; [tuple()]
+</code></pre>
+
+<ul class="definitions"><li><code>Id = binary()</code></li><li><code>No = non_neg_integer()</code></li><li><code>Start = binary()</code></li><li><code>End = binary()</code></li></ul>
+
+Get digital history data from Riak.
 <a name="search-2"></a>
 
 ### search/2 ###

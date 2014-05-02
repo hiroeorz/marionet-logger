@@ -8,8 +8,6 @@
 %%%-------------------------------------------------------------------
 -module(ml_logger_handler).
 
--behaviour(poolcat_worker).
-
 %% gen_server callbacks
 -export([init/1, handle_pop/2, terminate/2]).
 
