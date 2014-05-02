@@ -11,7 +11,9 @@
 %% API
 -export([start/0,
 	 start_subscribe/2,
-	 start_subscribe/3]).
+	 start_subscribe/3,
+	 get_analog_logs/4,
+	 get_digital_logs/4]).
 
 -export([start_dev/0]).
 
@@ -47,6 +49,40 @@ start_subscribe(Host, Topics) when is_list(Topics) ->
       Topics :: [{binary(), non_neg_integer()}].
 start_subscribe(Host, Port, Topics) when is_list(Topics) ->
     ml_client_sup:start_client(Host, Port, Topics).
+
+%%%===================================================================
+%%% Query functions
+%%%===================================================================
+
+%%--------------------------------------------------------------------
+%% @doc Get analog history data from Riak.
+%% @end
+%%--------------------------------------------------------------------
+-spec get_analog_logs(Id, No, Start, End) -> [tuple()] when
+      Id :: binary(),
+      No :: non_neg_integer(),
+      Start :: binary(), %% <<"20140501190620000">>
+      End :: binary().   %% <<"20140501200620000">>
+get_analog_logs(Id, No, Start, End) when is_binary(Id),
+					 is_integer(No),
+					 is_binary(Start),
+					 is_binary(End) ->
+    riak_pool:get_analog_logs(Id, No, Start, End).
+
+%%--------------------------------------------------------------------
+%% @doc Get digital history data from Riak.
+%% @end
+%%--------------------------------------------------------------------
+-spec get_digital_logs(Id, No, Start, End) -> [tuple()] when
+      Id :: binary(),
+      No :: non_neg_integer(),
+      Start :: binary(), %% <<"20140501190620000">>
+      End :: binary().   %% <<"20140501200620000">>
+get_digital_logs(Id, No, Start, End) when is_binary(Id),
+					  is_integer(No),
+					  is_binary(Start),
+					  is_binary(End) ->
+    riak_pool:get_digital_logs(Id, No, Start, End).
 
 %%%===================================================================
 %%% Internal functions

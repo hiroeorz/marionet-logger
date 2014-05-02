@@ -16,7 +16,8 @@
 -export([start_link/1,
 	 search/2,
 	 search_logs/2,
-	 get_analog_history/2]).
+	 get_analog_logs/4,
+	 get_digital_logs/4]).
 
 %% gen_server callbacks
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
@@ -69,11 +70,66 @@ search_logs(SearchQuery, Filter) when is_binary(SearchQuery),
 %% @doc Get analog history data from Riak.
 %% @end
 %%--------------------------------------------------------------------
--spec get_analog_history(Id, No) -> [tuple()] when
+-spec get_analog_logs(Id, No, Start, End) -> [tuple()] when
       Id :: binary(),
-      No :: non_neg_integer().
-get_analog_history(Id, No) when is_binary(Id), is_integer(No) ->
-    call_pool({get_analog_history, Id, No}).
+      No :: non_neg_integer(),
+      Start :: binary(), %% <<"20140501190620000">>
+      End :: binary().   %% <<"20140501200620000">>
+get_analog_logs(Id, No, Start, End) when is_binary(Id),
+					 is_integer(No),
+					 is_binary(Start),
+					 is_binary(End) ->
+    get_logs(Id, <<"ai">>, No, Start, End).
+
+%%--------------------------------------------------------------------
+%% @doc Get digital history data from Riak.
+%% @end
+%%--------------------------------------------------------------------
+-spec get_digital_logs(Id, No, Start, End) -> [tuple()] when
+      Id :: binary(),
+      No :: non_neg_integer(),
+      Start :: binary(), %% <<"20140501190620000">>
+      End :: binary().   %% <<"20140501200620000">>
+get_digital_logs(Id, No, Start, End) when is_binary(Id),
+					  is_integer(No),
+					  is_binary(Start),
+					  is_binary(End) ->
+    get_logs(Id, <<"di">>, No, Start, End).
+
+%%--------------------------------------------------------------------
+%% @private
+%% @doc Get log data from Riak.
+%% @end
+%%--------------------------------------------------------------------
+-define(MAX_LOG_COUNT, 1000).
+-spec get_logs(Id, Type, No, Start, End) -> [tuple()] when
+      Id :: binary(),
+      Type :: binary(),
+      No :: non_neg_integer(),
+      Start :: binary(), %% <<"20140501190620000">>
+      End :: binary().   %% <<"20140501200620000">>
+get_logs(Id, Type, No, Start, End) when is_binary(Id),
+					is_binary(Type),
+					is_integer(No),
+					is_binary(Start),
+					is_binary(End) ->
+    Query = query("type:~s AND id:~s AND no:~w AND datetime:[~s TO ~s]",
+		  [Type, Id, No, Start, End]),
+    io:format("Query: ~p~n", [Query]),
+    Options = [{rows, ?MAX_LOG_COUNT}],
+
+    Fun = fun(E) ->
+		  ObjId = proplists:get_value(<<"id">>, E),
+		  ObjNo = proplists:get_value(<<"no">>, E),
+		  ObjType = proplists:get_value(<<"type">>, E),
+		  ObjTime = proplists:get_value(<<"datetime">>, E),
+		  (ObjType =:= Type   andalso 
+		   ObjId   =:= Id     andalso 
+		   ObjNo   =:= No     andalso
+		   ObjTime >=  Start  andalso
+		   ObjTime =<  End)
+	  end,
+    call_pool({search_logs, Query, Options, Fun}).
 
 %%--------------------------------------------------------------------
 %% @private
@@ -121,29 +177,39 @@ init(Args) ->
 %%                                   {stop, Reason, State}
 %% @end
 %%--------------------------------------------------------------------
-handle_call({get_analog_history, Id, No}, From, State) ->    
-    Query = query("type:ai AND id:~s AND no:~w", [Id, No]),
-    F = fun(E) ->
-		ObjId = proplists:get_value(<<"id">>, E),
-		ObjNo = proplists:get_value(<<"no">>, E),
-		(ObjId =:= Id andalso ObjNo =:= No)
-	end,
-    handle_call({search_logs, Query, F}, From, State);
-
 handle_call({search, Index, SearchQuery}, _From, State = #state{pid = Pid}) ->
     Reply = riakc_pb_socket:search(Pid, Index, SearchQuery),
     {reply, Reply, State};
 
-handle_call({search_logs, SearchQuery, Filter}, _From,
+handle_call({search_logs, SearchQuery, Filter}, From, State) ->
+    handle_call({search_logs, SearchQuery, [], Filter}, From, State);
+
+handle_call({search_logs, SearchQuery, Options, Filter}, _From,
 	    State = #state{pid = Pid}) ->
-    R = case riakc_pb_socket:search(Pid, <<"fluentlog_index">>, SearchQuery) of
+    SearchResult = riakc_pb_socket:search(Pid, <<"fluentlog_index">>, 
+					  SearchQuery, Options),
+    R = case SearchResult of
 	    {ok, #search_results{docs = KeyObjList}} ->
 		L = [get_objects(Pid, Obj, Filter) || Obj <- KeyObjList],
-		{ok, lists:merge(L)};
+		{ok, sorted_logs(lists:merge(L))};
 	    {error, Reason} ->
 		{error, Reason}
 	end,
+
     {reply, R, State}.
+
+%%--------------------------------------------------------------------
+%% @private
+%% @doc Sort log list (by datetime).
+%% @end
+%%--------------------------------------------------------------------
+-spec sorted_logs(list()) -> list().
+sorted_logs(List) ->
+    lists:sort(fun(Obj1, Obj2) ->
+		       Time1 = proplists:get_value(<<"datetime">>, Obj1),
+		       Time2 = proplists:get_value(<<"datetime">>, Obj2),
+		       Time1 =< Time2
+	       end, List).
 
 %%--------------------------------------------------------------------
 %% @private
