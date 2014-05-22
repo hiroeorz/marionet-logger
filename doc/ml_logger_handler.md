@@ -7,6 +7,4 @@
 .
 Copyright (c) (C) 2014, HIROE Shin
 
-__Behaviours:__ [`poolcat_worker`](poolcat_worker.md).
-
 __Authors:__ HIROE Shin ([`shin@HIROE-no-MacBook-Pro.local`](mailto:shin@HIROE-no-MacBook-Pro.local)).

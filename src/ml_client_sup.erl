@@ -12,7 +12,7 @@
 
 %% API
 -export([start_link/0,
-	 start_client/3]).
+	 start_client/1]).
 
 %% Supervisor callbacks
 -export([init/1]).
@@ -37,10 +37,16 @@ start_link() ->
 %%% Supervisor callbacks
 %%%===================================================================
 
-start_client(Host, Port, Topics) ->
-    Opts = [{host, Host}, {port, Port}, {topics, Topics}],
-    ChildSpec = {{emqttc, make_ref()}, {emqttc, start_link, [Opts]},
+%%--------------------------------------------------------------------
+%% @doc Create subscribe client process.
+%% @end
+%%--------------------------------------------------------------------
+-spec start_client(SubOpts) -> {ok, pid()} when
+      SubOpts :: [ {atom(), binary() | inet:port_number()} ].
+start_client(SubOpts) ->    
+    ChildSpec = {{emqttc, make_ref()}, {emqttc, start_link, [SubOpts]},
 		 permanent, 2000, worker, [emqttc]},
+
     supervisor:start_child(?SERVER, ChildSpec).
 
 %%--------------------------------------------------------------------

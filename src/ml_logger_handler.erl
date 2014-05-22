@@ -41,10 +41,8 @@ init(_Any) ->
 %%--------------------------------------------------------------------
 handle_pop({publish, Topic, Payload}, 
 	   State = #state{fluent_logger_pid = Pid}) ->
-    io:format("topic: ~p~n", [Topic]),
     Obj = marionet_data:unpack(Payload),
     Obj1 = [{<<"topic">>, Topic} | Obj],
-    io:format("~p~n", [Obj1]),
 
     case proplists:get_value(<<"type">>, Obj) of
 	<<"di">> ->

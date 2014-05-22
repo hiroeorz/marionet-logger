@@ -15,7 +15,7 @@ __Authors:__ HIROE Shin ([`shin@HIROE-no-MacBook-Pro.local`](mailto:shin@HIROE-n
 ## Function Index ##
 
 
-<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#get_analog_logs-4">get_analog_logs/4</a></td><td>Get analog history data from Riak.</td></tr><tr><td valign="top"><a href="#get_digital_logs-4">get_digital_logs/4</a></td><td>Get digital history data from Riak.</td></tr><tr><td valign="top"><a href="#start-0">start/0</a></td><td>Start application.</td></tr><tr><td valign="top"><a href="#start_dev-0">start_dev/0</a></td><td></td></tr><tr><td valign="top"><a href="#start_subscribe-2">start_subscribe/2</a></td><td>Create client and connect to MQTT broker.</td></tr><tr><td valign="top"><a href="#start_subscribe-3">start_subscribe/3</a></td><td></td></tr></table>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#get_analog_logs-4">get_analog_logs/4</a></td><td>Get analog history data from Riak.</td></tr><tr><td valign="top"><a href="#get_digital_logs-4">get_digital_logs/4</a></td><td>Get digital history data from Riak.</td></tr><tr><td valign="top"><a href="#start-0">start/0</a></td><td>Start application.</td></tr><tr><td valign="top"><a href="#start_dev-0">start_dev/0</a></td><td></td></tr><tr><td valign="top"><a href="#start_subscribe-1">start_subscribe/1</a></td><td>Create client and connect to MQTT broker.</td></tr></table>
 
 
 <a name="functions"></a>
@@ -60,27 +60,15 @@ Start application
 `start_dev() -> any()`
 
 
-<a name="start_subscribe-2"></a>
+<a name="start_subscribe-1"></a>
 
-### start_subscribe/2 ###
+### start_subscribe/1 ###
 
 
 <pre><code>
-start_subscribe(Host, Topics) -&gt; {ok, pid()}
+start_subscribe(SubOpts) -&gt; {ok, pid()}
 </code></pre>
 
-<ul class="definitions"><li><code>Host = string()</code></li><li><code>Topics = [{binary(), non_neg_integer()}]</code></li></ul>
+<ul class="definitions"><li><code>SubOpts = [{atom(), binary() | <a href="inet.md#type-port_number">inet:port_number()</a>}]</code></li></ul>
 
 Create client and connect to MQTT broker.
-<a name="start_subscribe-3"></a>
-
-### start_subscribe/3 ###
-
-
-<pre><code>
-start_subscribe(Host, Port, Topics) -&gt; {ok, pid()}
-</code></pre>
-
-<ul class="definitions"><li><code>Host = string()</code></li><li><code>Port = <a href="inet.md#type-port_number">inet:port_number()</a></code></li><li><code>Topics = [{binary(), non_neg_integer()}]</code></li></ul>
-
-

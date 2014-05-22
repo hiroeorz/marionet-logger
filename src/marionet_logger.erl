@@ -10,8 +10,7 @@
 
 %% API
 -export([start/0,
-	 start_subscribe/2,
-	 start_subscribe/3,
+	 start_subscribe/1,
 	 get_analog_logs/4,
 	 get_digital_logs/4]).
 
@@ -37,18 +36,15 @@ start() ->
 %% @doc Create client and connect to MQTT broker.
 %% @end
 %%--------------------------------------------------------------------
--spec start_subscribe(Host, Topics) -> {ok, pid()} when
-      Host :: string(),
-      Topics :: [{binary(), non_neg_integer()}].
-start_subscribe(Host, Topics) when is_list(Topics) ->
-    start_subscribe(Host, 1883, Topics).
-
--spec start_subscribe(Host, Port, Topics) -> {ok, pid()} when
-      Host :: string(),
-      Port :: inet:port_number(),
-      Topics :: [{binary(), non_neg_integer()}].
-start_subscribe(Host, Port, Topics) when is_list(Topics) ->
-    ml_client_sup:start_client(Host, Port, Topics).
+-spec start_subscribe(SubOpts) -> {ok, pid()} when
+      SubOpts :: [ {atom(), binary() | inet:port_number()} ].
+start_subscribe(SubOpts) when is_list(SubOpts) ->
+    true = proplists:is_defined(host, SubOpts),
+    true = proplists:is_defined(port, SubOpts),
+    true = proplists:is_defined(topics, SubOpts),
+    true = proplists:is_defined(username, SubOpts),
+    true = proplists:is_defined(password, SubOpts),
+    ml_client_sup:start_client(SubOpts).
 
 %%%===================================================================
 %%% Query functions
@@ -95,12 +91,19 @@ get_digital_logs(Id, No, Start, End) when is_binary(Id),
 %% set mqtt.marionet.org of ipaddress in /etc/hosts .
 start_dev() ->
     ?MODULE:start(),
-    ?MODULE:start_subscribe("mqtt.marionet.org", 
-			    [{<<"/demo/galileo/analog/#">>, 0},
-			     {<<"/demo/pi001/analog/#">>,   0}]),
+    ?MODULE:start_subscribe([{host, "mqtt.marionet.org"},
+			     {port, 1883},
+			     {username, <<"hiroe_orz17">>},
+			     {password, <<"hre47">>},
+			     {topics, [{<<"/demo/galileo/analog/#">>, 0},
+				       {<<"/demo/pi001/analog/#">>,   0}]}
+			    ]),
 
-    ?MODULE:start_subscribe("mqtt.marionet.org", 
-			    [{<<"/demo/galileo/digital/#">>, 0},
-			     {<<"/demo/pi001/digital/#">>,   0}]),
+    ?MODULE:start_subscribe([{host, "mqtt.marionet.org"},
+			     {port, 1883},
+			     {username, <<"hiroe_orz17">>},
+			     {password, <<"hre47">>},
+			     {topics, [{<<"/demo/galileo/digital/#">>, 0},
+				       {<<"/demo/pi001/digital/#">>,   0}]}]),
     ok.
     
